@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Book Appointment{% endblock %}
+{% block content %}
+<h1>Book Appointment</h1>
+<p class="sub">Select patient, doctor, date and time</p>
+<div class="panel form-card">
+  {% if not patients or not doctors %}
+    <div class="empty">
+      Appointment book panna muthalla
+      {% if not patients %}<a href="{{ url_for('patient_add') }}">oru patient</a>{% endif %}
+      {% if not patients and not doctors %} and {% endif %}
+      {% if not doctors %}<a href="{{ url_for('doctor_add') }}">oru doctor</a>{% endif %}
+      add pannunga.
+    </div>
+  {% else %}
+  <form method="post">
+    <div class="field"><label>Patient</label>
+      <select name="patient_id" required>
+        <option value="">-- Select Patient --</option>
+        {% for p in patients %}<option value="{{ p.id }}">{{ p.name }} ({{ p.phone }})</option>{% endfor %}
+      </select>
+    </div>
+    <div class="field"><label>Doctor</label>
+      <select name="doctor_id" required>
+        <option value="">-- Select Doctor --</option>
+        {% for d in doctors %}<option value="{{ d.id }}">Dr. {{ d.name }} - {{ d.specialization }} ({{ d.fee|money }})</option>{% endfor %}
+      </select>
+    </div>
+    <div class="row2">
+      <div class="field"><label>Date</label><input type="date" name="date" min="{{ today }}" required></div>
+      <div class="field"><label>Time</label><input type="time" name="time" required></div>
+    </div>
+    <div class="actions"><button class="btn">Book Appointment</button><a class="btn gray" href="{{ url_for('appointments') }}">Cancel</a></div>
+  </form>
+  {% endif %}
+</div>
+{% endblock %}
