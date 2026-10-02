@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Appointments{% endblock %}
+{% block content %}
+<div class="topbar">
+  <div><h1>Appointments</h1><p class="sub" style="margin:0">{{ rows|length }} record(s)</p></div>
+  <div class="actions">
+    <form class="filters" method="get">
+      <select name="status">
+        <option value="">All Status</option>
+        {% for s in ['Scheduled', 'Completed', 'Cancelled'] %}<option {{ 'selected' if status == s }}>{{ s }}</option>{% endfor %}
+      </select>
+      <input type="date" name="date" value="{{ day }}">
+      <button class="btn gray">Filter</button>
+      <a class="btn gray" href="{{ url_for('appointments') }}">Reset</a>
+    </form>
+    <a class="btn" href="{{ url_for('appointment_add') }}">+ Book Appointment</a>
+  </div>
+</div>
+<div class="panel">
+  {% if rows %}
+  <table>
+    <tr><th>ID</th><th>Patient</th><th>Doctor</th><th>Date</th><th>Time</th><th>Status</th><th>Actions</th></tr>
+    {% for a in rows %}
+    <tr>
+      <td>#{{ a.id }}</td><td><b>{{ a.patient }}</b></td>
+      <td>Dr. {{ a.doctor }}<br><small style="color:var(--muted)">{{ a.specialization }}</small></td>
+      <td>{{ a.date }}</td><td>{{ a.time }}</td>
+      <td><span class="badge b-{{ a.status }}">{{ a.status }}</span></td>
+      <td class="actions">
+        {% if a.status == 'Scheduled' %}
+          <form method="post" action="{{ url_for('appointment_status', aid=a.id, action='complete') }}"><button class="btn sm green">Complete</button></form>
+          <form method="post" action="{{ url_for('appointment_status', aid=a.id, action='cancel') }}" onsubmit="return confirm('Cancel this appointment?')"><button class="btn sm red">Cancel</button></form>
+        {% elif a.status == 'Completed' %}
+          {% if a.bill_id %}
+            <a class="btn sm gray" href="{{ url_for('invoice', bid=a.bill_id) }}">View Bill</a>
+          {% else %}
+            <a class="btn sm orange" href="{{ url_for('bill_generate', aid=a.id) }}">Generate Bill</a>
+          {% endif %}
+        {% else %}-{% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}<div class="empty">No appointments found.</div>{% endif %}
+</div>
+{% endblock %}
