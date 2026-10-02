@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Billing{% endblock %}
+{% block content %}
+<div class="topbar">
+  <div><h1>Billing</h1><p class="sub" style="margin:0">{{ rows|length }} bill(s)</p></div>
+  <form class="filters" method="get">
+    <select name="status" onchange="this.form.submit()">
+      <option value="">All Bills</option>
+      {% for s in ['Unpaid', 'Paid'] %}<option {{ 'selected' if status == s }}>{{ s }}</option>{% endfor %}
+    </select>
+  </form>
+</div>
+<div class="panel">
+  {% if rows %}
+  <table>
+    <tr><th>Bill</th><th>Patient</th><th>Doctor</th><th>Visit Date</th><th>Total</th><th>Status</th><th>Actions</th></tr>
+    {% for b in rows %}
+    <tr>
+      <td>#{{ b.id }}</td><td><b>{{ b.patient }}</b></td><td>Dr. {{ b.doctor }}</td>
+      <td>{{ b.date }}</td><td><b>{{ b.total|money }}</b></td>
+      <td><span class="badge b-{{ b.status }}">{{ b.status }}</span></td>
+      <td class="actions">
+        <a class="btn sm gray" href="{{ url_for('invoice', bid=b.id) }}">Invoice</a>
+        {% if b.status == 'Unpaid' %}
+        <form method="post" action="{{ url_for('bill_pay', bid=b.id) }}" onsubmit="return confirm('Mark this bill as paid?')"><button class="btn sm green">Mark Paid</button></form>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <div class="empty">No bills yet. Appointment ah "Complete" pannitu, <a href="{{ url_for('appointments') }}">Appointments</a> page la "Generate Bill" click pannunga.</div>
+  {% endif %}
+</div>
+{% endblock %}
