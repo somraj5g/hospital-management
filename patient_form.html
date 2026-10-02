@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if p else 'Add' }} Patient{% endblock %}
+{% block content %}
+<h1>{{ 'Edit Patient' if p else 'Add Patient' }}</h1>
+<p class="sub">Patient details</p>
+<div class="panel form-card">
+  <form method="post">
+    <div class="field"><label>Full Name</label><input name="name" required value="{{ p.name if p }}"></div>
+    <div class="row2">
+      <div class="field"><label>Age</label><input type="number" name="age" min="0" max="120" required value="{{ p.age if p }}"></div>
+      <div class="field"><label>Gender</label>
+        <select name="gender">
+          {% for g in ['Male', 'Female', 'Other'] %}<option {{ 'selected' if p and p.gender == g }}>{{ g }}</option>{% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="field"><label>Phone</label><input name="phone" required value="{{ p.phone if p }}"></div>
+    <div class="field"><label>Address</label><textarea name="address" rows="3">{{ p.address if p and p.address }}</textarea></div>
+    <div class="actions"><button class="btn">Save</button><a class="btn gray" href="{{ url_for('patients') }}">Cancel</a></div>
+  </form>
+</div>
+{% endblock %}
