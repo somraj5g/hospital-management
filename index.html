@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+<p class="sub">Hospital overview</p>
+
+<div class="cards">
+  <div class="stat"><div class="num">{{ stats.patients }}</div><div class="lbl">Total Patients</div></div>
+  <div class="stat"><div class="num">{{ stats.doctors }}</div><div class="lbl">Total Doctors</div></div>
+  <div class="stat"><div class="num">{{ stats.today }}</div><div class="lbl">Today's Appointments</div></div>
+  <div class="stat warn"><div class="num">{{ stats.unpaid|money }}</div><div class="lbl">Unpaid Bills</div></div>
+  <div class="stat ok"><div class="num">{{ stats.revenue|money }}</div><div class="lbl">Revenue (Paid)</div></div>
+</div>
+
+<div class="panel">
+  <h2>Upcoming Appointments</h2>
+  {% if upcoming %}
+  <table>
+    <tr><th>ID</th><th>Patient</th><th>Doctor</th><th>Date</th><th>Time</th><th>Status</th></tr>
+    {% for a in upcoming %}
+    <tr>
+      <td>#{{ a.id }}</td><td>{{ a.patient }}</td><td>Dr. {{ a.doctor }}</td>
+      <td>{{ a.date }}</td><td>{{ a.time }}</td><td><span class="badge b-{{ a.status }}">{{ a.status }}</span></td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <div class="empty">Upcoming appointments illa. <a href="{{ url_for('appointment_add') }}">Book one</a></div>
+  {% endif %}
+</div>
+{% endblock %}
