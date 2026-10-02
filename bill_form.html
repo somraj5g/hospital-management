@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Generate Bill{% endblock %}
+{% block content %}
+<h1>Generate Bill</h1>
+<p class="sub">Appointment #{{ a.id }} - {{ a.patient }} with Dr. {{ a.doctor }} ({{ a.date }} {{ a.time }})</p>
+<div class="panel form-card">
+  <form method="post">
+    <div class="field"><label>Consultation Fee (Doctor fee)</label><input value="{{ a.fee }}" disabled></div>
+    <div class="row2">
+      <div class="field"><label>Medicine Charges (₹)</label><input type="number" step="0.01" min="0" name="medicine" id="med" value="0"></div>
+      <div class="field"><label>Other Charges (₹)</label><input type="number" step="0.01" min="0" name="other" id="oth" value="0"></div>
+    </div>
+    <h2>Total: <span id="total" data-fee="{{ a.fee }}">{{ a.fee|money }}</span></h2>
+    <div class="actions"><button class="btn">Generate Bill</button><a class="btn gray" href="{{ url_for('appointments') }}">Cancel</a></div>
+  </form>
+</div>
+<script>
+  const fee = parseFloat(document.getElementById('total').dataset.fee);
+  const med = document.getElementById('med'), oth = document.getElementById('oth'), tot = document.getElementById('total');
+  function calc() {
+    const t = fee + (parseFloat(med.value) || 0) + (parseFloat(oth.value) || 0);
+    tot.textContent = '₹' + t.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  }
+  med.addEventListener('input', calc); oth.addEventListener('input', calc);
+</script>
+{% endblock %}
