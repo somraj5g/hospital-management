@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Doctors{% endblock %}
+{% block content %}
+<div class="topbar">
+  <div><h1>Doctors</h1><p class="sub" style="margin:0">{{ rows|length }} record(s)</p></div>
+  <div class="actions">
+    <form class="filters" method="get">
+      <input name="q" value="{{ q }}" placeholder="Search name / specialization">
+      <button class="btn gray">Search</button>
+    </form>
+    <a class="btn" href="{{ url_for('doctor_add') }}">+ Add Doctor</a>
+  </div>
+</div>
+<div class="panel">
+  {% if rows %}
+  <table>
+    <tr><th>ID</th><th>Name</th><th>Specialization</th><th>Phone</th><th>Fee</th><th>Actions</th></tr>
+    {% for d in rows %}
+    <tr>
+      <td>#{{ d.id }}</td><td><b>Dr. {{ d.name }}</b></td><td>{{ d.specialization }}</td>
+      <td>{{ d.phone }}</td><td>{{ d.fee|money }}</td>
+      <td class="actions">
+        <a class="btn sm gray" href="{{ url_for('doctor_edit', did=d.id) }}">Edit</a>
+        <form method="post" action="{{ url_for('doctor_delete', did=d.id) }}"
+              onsubmit="return confirm('Delete this doctor? Related appointments and bills will also be deleted.')">
+          <button class="btn sm red">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}<div class="empty">No doctors found.</div>{% endif %}
+</div>
+{% endblock %}
