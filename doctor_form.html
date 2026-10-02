@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if d else 'Add' }} Doctor{% endblock %}
+{% block content %}
+<h1>{{ 'Edit Doctor' if d else 'Add Doctor' }}</h1>
+<p class="sub">Doctor details</p>
+<div class="panel form-card">
+  <form method="post">
+    <div class="field"><label>Full Name</label><input name="name" required value="{{ d.name if d }}"></div>
+    <div class="field"><label>Specialization</label><input name="specialization" required value="{{ d.specialization if d }}"></div>
+    <div class="row2">
+      <div class="field"><label>Phone</label><input name="phone" required value="{{ d.phone if d }}"></div>
+      <div class="field"><label>Consultation Fee (₹)</label><input type="number" step="0.01" min="0" name="fee" required value="{{ d.fee if d }}"></div>
+    </div>
+    <div class="actions"><button class="btn">Save</button><a class="btn gray" href="{{ url_for('doctors') }}">Cancel</a></div>
+  </form>
+</div>
+{% endblock %}
